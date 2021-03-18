@@ -1,7 +1,7 @@
 include ../make.config
 
-CC?=gcc
-OPT?=-O3
+CC=clang
+OPT=-O3 -fno-slp-vectorize -fno-vectorize 
 MAGIC?=-DMAGIC
 
 #-fno-tree-vectorize 
@@ -23,10 +23,11 @@ pre_req:
 endif
 
 bench: bench.c pre_req
-	${CC} ${CFLAGS} bench.c --static --std=c99  -lm -o bench
-
+#	${CC} ${CFLAGS} bench.c --static --std=c99  -lm -o bench
+	${CC} ${CFLAGS} -c -emit-llvm bench.c --std=c99 -o bench.bc
+	
 clean:
-	rm -f bench
+	rm -f bench bench.bc bench.i bench.o bench.s randArr.h
 
 .phony : clean all
 
